@@ -320,8 +320,30 @@ app.clientside_callback(
         let backup_colors = ['#aec7e8', '#ffbb78', '#98df8a', '#ff9896'];
         let fallback_counter = 0;
 
-        // Fix the Jumping Legend: Sort plotting order ALPHABETICALLY instead of by camera height
-        final_beams.sort((a, b) => a.hist.localeCompare(b.hist));
+        // --- Legend & Drawing Order ---
+        // Force the legend to statically match the standard far-field vertical layout
+        // (Top-to-Bottom: Orange, Red, Blue, Brown, Green, Purple)
+        let visual_order = {
+            "T1*T2*T3": 1,            // Top (Orange)
+            "R1*R2*T3 + T1*R2*R3": 2, // Middle-Up (Red)
+            "R1*R2*T3": 2,            
+            "T1*R2*R3": 2,            
+            "T1*T2*R3": 3,            // Top-Down (Blue)
+            "R1*T2*R3": 4,            // Bottom-Up (Brown)
+            "R1*R2*R3 + T1*R2*T3": 5, // Middle-Down (Green)
+            "R1*R2*R3": 5,            
+            "T1*R2*T3": 5,            
+            "R1*T2*T3": 6,            // Bottom (Purple)
+            "Direct Miss": 99
+        };
+
+        final_beams.sort((a, b) => {
+            let rankA = visual_order[a.hist] || 50;
+            let rankB = visual_order[b.hist] || 50;
+            // If two beams have the same rank (e.g., if a fallback occurs), sort alphabetically as a backup
+            if (rankA === rankB) return a.hist.localeCompare(b.hist);
+            return rankA - rankB;
+        });
 
         final_beams.forEach(beam => {
             let color = fixed_palette[beam.hist];
