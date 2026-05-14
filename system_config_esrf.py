@@ -6,11 +6,11 @@ import plotly.graph_objects as go
 # Initialize the Dash app
 app = dash.Dash(__name__)
 server = app.server
-app.title = "X-Ray IFM Simulator"
+app.title = "IFM Configuration Visualizer"
 
 # --- Layout (The User Interface) ---
 app.layout = html.Div(style={'fontFamily': 'Arial, sans-serif', 'padding': '20px'}, children=[
-    html.H1("X-Ray Interaction-Free Measurement Simulator", style={'textAlign': 'center'}),
+    html.H1("IFM Configuration Visualizer", style={'textAlign': 'center'}),
 
     html.Div(style={'display': 'flex', 'justifyContent': 'space-around', 'paddingBottom': '20px'}, children=[
         # Column 1
@@ -72,14 +72,14 @@ app.layout = html.Div(style={'fontFamily': 'Arial, sans-serif', 'padding': '20px
 def update_plot(energy_kev, beam_y_offset, wedge_x, wedge_y, int_detector_x, int_detector_y, out_len):
     fig = go.Figure()
 
-    # Physics parameters (Si(111) diffraction planes)
+    # Physics parameters (Si(333) diffraction planes)
     wavelength_A = 12.398 / energy_kev
     a_Si = 5.431
     d_333 = a_Si / np.sqrt(27)
 
     sin_theta = wavelength_A / (2 * d_333)
     if sin_theta > 1.0:
-        return fig.update_layout(title="Energy too low for Bragg diffraction on Si(111)")
+        return fig.update_layout(title="Energy too low for Bragg diffraction on Si(333)")
 
     theta_B_rad = np.arcsin(sin_theta)
     theta_B_deg = np.degrees(theta_B_rad)
@@ -229,7 +229,7 @@ def update_plot(energy_kev, beam_y_offset, wedge_x, wedge_y, int_detector_x, int
         propagate(beam['bx'], beam['by'], beam['bslope'], color_map[beam['hist']], det_x, label=beam['hist'])
 
     fig.update_layout(
-        title=f"Si(111) Ray Tracing | Energy = {energy_kev:.2f} keV | θ_B ≈ {theta_B_deg:.2f}°",
+        title=f"Si(333) Ray Tracing | Energy = {energy_kev:.2f} keV | θ_B ≈ {theta_B_deg:.2f}°",
         xaxis=dict(title='Propagation Distance (mm)', range=[-15, 170]),
         yaxis=dict(title='Transverse Distance (mm)', range=[-35, 35], scaleanchor="x", scaleratio=1),
         shapes=shapes, annotations=annotations,
