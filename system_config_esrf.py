@@ -9,56 +9,88 @@ server = app.server
 app.title = "IFM Configuration Visualizer"
 
 # --- Layout (The User Interface) ---
-app.layout = html.Div(style={'fontFamily': 'system-ui, -apple-system, sans-serif', 'padding': '30px'}, children=[
-    html.H1("IFM Configuration Visualizer", style={'textAlign': 'center', 'marginBottom': '40px'}),
+app.layout = html.Div(style={'fontFamily': 'system-ui, -apple-system, sans-serif', 'padding': '20px'}, children=[
 
-    html.Div(style={'display': 'flex', 'justifyContent': 'space-around', 'paddingBottom': '20px'}, children=[
-        # Column 1
-        html.Div(style={'width': '30%'}, children=[
-            html.Label("Energy (keV)", style={'fontWeight': 'bold', 'marginBottom': '10px', 'display': 'block'}),
-            dcc.Slider(id='energy', min=7.0, max=30.0, step=0.5, value=30.0, updatemode='drag',
-                       marks=None, tooltip={"placement": "bottom", "always_visible": True}),
-            html.Br(),
+    # The Header
+    html.H1("IFM Configuration Visualizer", style={'textAlign': 'center', 'marginBottom': '20px'}),
 
-            html.Label("Beam Offset Y", style={'fontWeight': 'bold', 'marginBottom': '10px', 'display': 'block'}),
-            dcc.Slider(id='beam_y', min=-15.0, max=15.0, step=0.5, value=0.0, updatemode='drag',
-                       marks=None, tooltip={"placement": "bottom", "always_visible": True}),
-            html.Br(),
+    # The Main Side-by-Side Container
+    html.Div(style={'display': 'flex', 'flexDirection': 'row', 'alignItems': 'flex-start'}, children=[
 
-            html.Label("Wedge X", style={'fontWeight': 'bold', 'marginBottom': '10px', 'display': 'block'}),
-            dcc.Slider(id='wedge_x', min=0.0, max=22.0, step=0.5, value=15.0, updatemode='drag',
-                       marks=None, tooltip={"placement": "bottom", "always_visible": True}),
+        # LEFT SIDE: The Plot (75% width)
+        html.Div(style={'width': '75%', 'paddingRight': '20px'}, children=[
+            dcc.Graph(id='sim-plot', style={'height': '80vh'})
         ]),
 
-        # Column 2
-        html.Div(style={'width': '30%'}, children=[
-            html.Label("Wedge Y", style={'fontWeight': 'bold', 'marginBottom': '10px', 'display': 'block'}),
-            dcc.Slider(id='wedge_y', min=-30.0, max=30.0, step=0.5, value=20.0, updatemode='drag',
-                       marks=None, tooltip={"placement": "bottom", "always_visible": True}),
-            html.Br(),
+        # RIGHT SIDE: The Control Panel (25% width)
+        html.Div(style={
+            'width': '25%',
+            'padding': '20px',
+            'backgroundColor': '#f8f9fa',  # Subtle gray background for the panel
+            'borderRadius': '8px',
+            'border': '1px solid #e9ecef',
+            'height': '80vh',
+            'overflowY': 'auto'  # Adds a scrollbar if the screen is too small
+        }, children=[
+            html.H3("Parameters", style={'marginTop': '0', 'borderBottom': '1px solid #ccc', 'paddingBottom': '10px'}),
 
-            html.Label("Bomb X", style={'fontWeight': 'bold', 'marginBottom': '10px', 'display': 'block'}),
-            dcc.Slider(id='bomb_x', min=0.0, max=60.0, step=0.5, value=28.0, updatemode='drag',
-                       marks=None, tooltip={"placement": "bottom", "always_visible": True}),
-            html.Br(),
+            # Group 1: Beam Parameters
+            html.Div(style={'marginBottom': '30px'}, children=[
+                html.Label("Energy (keV)", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
+                dcc.Slider(id='energy', min=7.0, max=30.0, step=0.5, value=30.0, updatemode='drag', marks=None,
+                           tooltip={"placement": "bottom", "always_visible": True}),
 
-            html.Label("Bomb Y", style={'fontWeight': 'bold', 'marginBottom': '10px', 'display': 'block'}),
-            dcc.Slider(id='bomb_y', min=-100.0, max=50.0, step=0.5, value=-50.0, updatemode='drag',
-                       marks=None, tooltip={"placement": "bottom", "always_visible": True}),
-        ]),
+                html.Div(style={'height': '15px'}),  # Space inside group
 
-        # Column 3
-        html.Div(style={'width': '30%'}, children=[
-            html.Label("Camera Distance", style={'fontWeight': 'bold', 'marginBottom': '10px', 'display': 'block'}),
-            dcc.Slider(id='cam_dist', min=10.0, max=150.0, step=1.0, value=60.0, updatemode='drag',
-                       marks=None, tooltip={"placement": "bottom", "always_visible": True}),
-        ]),
-    ]),
+                html.Label("Beam Offset Y", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
+                dcc.Slider(id='beam_y', min=-15.0, max=15.0, step=0.5, value=0.0, updatemode='drag', marks=None,
+                           tooltip={"placement": "bottom", "always_visible": True}),
+            ]),
 
-    html.Hr(style={'marginTop': '30px', 'marginBottom': '30px'}),
+            # Group 2: The Wedge (Visually grouped with a white card)
+            html.Div(
+                style={'marginBottom': '30px', 'padding': '15px', 'backgroundColor': '#ffffff', 'borderRadius': '5px',
+                       'border': '1px solid #ddd'}, children=[
+                    html.Div("Wedge Position", style={'fontWeight': 'bold', 'color': '#666', 'marginBottom': '15px',
+                                                      'textTransform': 'uppercase', 'fontSize': '0.85em'}),
 
-    # The Plot
-    dcc.Graph(id='sim-plot', style={'height': '70vh'})
+                    html.Label("Wedge X", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
+                    dcc.Slider(id='wedge_x', min=0.0, max=22.0, step=0.5, value=15.0, updatemode='drag', marks=None,
+                               tooltip={"placement": "bottom", "always_visible": True}),
+
+                    html.Div(style={'height': '15px'}),
+
+                    html.Label("Wedge Y", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
+                    dcc.Slider(id='wedge_y', min=-30.0, max=30.0, step=0.5, value=20.0, updatemode='drag', marks=None,
+                               tooltip={"placement": "bottom", "always_visible": True}),
+                ]),
+
+            # Group 3: The Bomb (Visually grouped with a white card)
+            html.Div(
+                style={'marginBottom': '30px', 'padding': '15px', 'backgroundColor': '#ffffff', 'borderRadius': '5px',
+                       'border': '1px solid #ddd'}, children=[
+                    html.Div("Bomb Position", style={'fontWeight': 'bold', 'color': '#666', 'marginBottom': '15px',
+                                                     'textTransform': 'uppercase', 'fontSize': '0.85em'}),
+
+                    html.Label("Bomb X", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
+                    dcc.Slider(id='bomb_x', min=0.0, max=60.0, step=0.5, value=28.0, updatemode='drag', marks=None,
+                               tooltip={"placement": "bottom", "always_visible": True}),
+
+                    html.Div(style={'height': '15px'}),
+
+                    html.Label("Bomb Y", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
+                    dcc.Slider(id='bomb_y', min=-100.0, max=50.0, step=0.5, value=-50.0, updatemode='drag', marks=None,
+                               tooltip={"placement": "bottom", "always_visible": True}),
+                ]),
+
+            # Group 4: Detectors
+            html.Div(style={'marginBottom': '10px'}, children=[
+                html.Label("Camera Distance", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
+                dcc.Slider(id='cam_dist', min=10.0, max=150.0, step=1.0, value=60.0, updatemode='drag', marks=None,
+                           tooltip={"placement": "bottom", "always_visible": True}),
+            ]),
+        ])
+    ])
 ])
 
 # --- Callbacks (The Real-Time Engine) ---
