@@ -266,9 +266,13 @@ app.clientside_callback(
         let unique_ports = {};
         for (let i = 0; i < beams_leaving_3.length; i++) {
             let beam = beams_leaving_3[i];
-            // Create a string key instead of a python tuple
-            let state_key = beam.x.toFixed(4) + "_" + beam.y.toFixed(4) + "_" + beam.slope.toFixed(4);
-
+            
+            // Fix the 8-ports bug: Force JavaScript to treat -0.0 and 0.0 identically
+            let clean_x = Number(beam.x.toFixed(3));
+            let clean_y = Number(beam.y.toFixed(3));
+            let clean_slope = Number(beam.slope.toFixed(3));
+            let state_key = clean_x + "_" + clean_y + "_" + clean_slope;
+            
             if (!unique_ports[state_key]) {
                 unique_ports[state_key] = {bx: beam.x, by: beam.y, bslope: beam.slope, hists: []};
             }
@@ -291,42 +295,41 @@ app.clientside_callback(
         }
 
         // --- Generate Stable Colors ---
-        // A fixed dictionary so beam colors never change when the bomb moves
+        // A fixed dictionary so beam colors never change when the bomb moves or beams merge
         let fixed_palette = {
+            // Top Ports
             "T1*T2*T3": "#ff7f0e", // Orange
             "T1*T2*R3": "#1f77b4", // Blue
-            "T1*R2*T3": "#2ca02c", // Green
-            "T1*R2*R3": "#d62728", // Red
-            "R1*T2*T3": "#9467bd", // Purple
+            
+            // Middle Ports (Interfering paths - The O-beam and H-beam)
+            "R1*R2*T3 + T1*R2*R3": "#d62728", // Red
+            "R1*R2*T3": "#d62728",            // Red (If T1R2 is blocked by the bomb)
+            "T1*R2*R3": "#d62728",            // Red (If R1R2 is blocked by the bomb)
+
+            "R1*R2*R3 + T1*R2*T3": "#2ca02c", // Green
+            "R1*R2*R3": "#2ca02c",            // Green (If T1R2 is blocked)
+            "T1*R2*T3": "#2ca02c",            // Green (If R1R2 is blocked)
+
+            // Bottom Ports
             "R1*T2*R3": "#8c564b", // Brown
-            "R1*R2*T3": "#e377c2", // Pink
-            "R1*R2*R3": "#17becf", // Cyan
-            "T1*R2*R3 + T1*T2*T3": "#bcbd22", // Olive (O-beam Interference)
-            "T1*R2*T3 + T1*T2*R3": "#7f7f7f", // Gray (H-beam Interference)
+            "R1*T2*T3": "#9467bd", // Purple
+            
             "Direct Miss": "black"
         };
 
-        let backup_colors = ['#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5', '#c49c94', '#f7b6d2', '#c7c7c7'];
+        let backup_colors = ['#aec7e8', '#ffbb78', '#98df8a', '#ff9896'];
         let fallback_counter = 0;
 
-        let color_map = {};
+        // Fix the Jumping Legend: Sort plotting order ALPHABETICALLY instead of by camera height
+        final_beams.sort((a, b) => a.hist.localeCompare(b.hist));
+
         final_beams.forEach(beam => {
-            if (!color_map[beam.hist]) {
-                if (fixed_palette[beam.hist]) {
-                    color_map[beam.hist] = fixed_palette[beam.hist];
-                } else {
-                    // Just in case a weird beam combination happens that we didn't explicitly name
-                    color_map[beam.hist] = backup_colors[fallback_counter % backup_colors.length];
-                    fallback_counter++;
-                }
+            let color = fixed_palette[beam.hist];
+            if (!color) {
+                color = backup_colors[fallback_counter % backup_colors.length];
+                fallback_counter++;
             }
-        });
-
-        // Sort plotting order dynamically
-        final_beams.sort((a, b) => b.y_cam - a.y_cam);
-
-        final_beams.forEach(beam => {
-            propagate(beam.bx, beam.by, beam.bslope, color_map[beam.hist], det_x, beam.hist);
+            propagate(beam.bx, beam.by, beam.bslope, color, det_x, beam.hist);
         });
 
         // --- 6. Return Plotly Dictionary ---
