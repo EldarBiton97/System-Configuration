@@ -9,54 +9,57 @@ server = app.server
 app.title = "IFM Configuration Visualizer"
 
 # --- Layout (The User Interface) ---
-app.layout = html.Div(style={'fontFamily': 'Arial, sans-serif', 'padding': '20px'}, children=[
-    html.H1("IFM Configuration Visualizer", style={'textAlign': 'center'}),
+app.layout = html.Div(style={'fontFamily': 'system-ui, -apple-system, sans-serif', 'padding': '30px'}, children=[
+    html.H1("IFM Configuration Visualizer", style={'textAlign': 'center', 'marginBottom': '40px'}),
 
     html.Div(style={'display': 'flex', 'justifyContent': 'space-around', 'paddingBottom': '20px'}, children=[
         # Column 1
         html.Div(style={'width': '30%'}, children=[
-            html.Label("Energy (keV)"),
+            html.Label("Energy (keV)", style={'fontWeight': 'bold', 'marginBottom': '10px', 'display': 'block'}),
             dcc.Slider(id='energy', min=7.0, max=30.0, step=0.5, value=30.0, updatemode='drag',
-                       tooltip={"placement": "bottom", "always_visible": True}),
+                       marks=None, tooltip={"placement": "bottom", "always_visible": True}),
             html.Br(),
-            html.Label("Beam Offset Y"),
+
+            html.Label("Beam Offset Y", style={'fontWeight': 'bold', 'marginBottom': '10px', 'display': 'block'}),
             dcc.Slider(id='beam_y', min=-15.0, max=15.0, step=0.5, value=0.0, updatemode='drag',
-                       tooltip={"placement": "bottom", "always_visible": True}),
+                       marks=None, tooltip={"placement": "bottom", "always_visible": True}),
             html.Br(),
-            html.Label("Wedge X"),
+
+            html.Label("Wedge X", style={'fontWeight': 'bold', 'marginBottom': '10px', 'display': 'block'}),
             dcc.Slider(id='wedge_x', min=0.0, max=22.0, step=0.5, value=15.0, updatemode='drag',
-                       tooltip={"placement": "bottom", "always_visible": True}),
+                       marks=None, tooltip={"placement": "bottom", "always_visible": True}),
         ]),
 
         # Column 2
         html.Div(style={'width': '30%'}, children=[
-            html.Label("Wedge Y"),
+            html.Label("Wedge Y", style={'fontWeight': 'bold', 'marginBottom': '10px', 'display': 'block'}),
             dcc.Slider(id='wedge_y', min=-30.0, max=30.0, step=0.5, value=20.0, updatemode='drag',
-                       tooltip={"placement": "bottom", "always_visible": True}),
+                       marks=None, tooltip={"placement": "bottom", "always_visible": True}),
             html.Br(),
-            html.Label("Bomb X"),
+
+            html.Label("Bomb X", style={'fontWeight': 'bold', 'marginBottom': '10px', 'display': 'block'}),
             dcc.Slider(id='bomb_x', min=0.0, max=60.0, step=0.5, value=28.0, updatemode='drag',
-                       tooltip={"placement": "bottom", "always_visible": True}),
+                       marks=None, tooltip={"placement": "bottom", "always_visible": True}),
             html.Br(),
-            html.Label("Bomb Y"),
+
+            html.Label("Bomb Y", style={'fontWeight': 'bold', 'marginBottom': '10px', 'display': 'block'}),
             dcc.Slider(id='bomb_y', min=-100.0, max=50.0, step=0.5, value=-50.0, updatemode='drag',
-                       tooltip={"placement": "bottom", "always_visible": True}),
+                       marks=None, tooltip={"placement": "bottom", "always_visible": True}),
         ]),
 
         # Column 3
         html.Div(style={'width': '30%'}, children=[
-            html.Label("Camera Distance"),
+            html.Label("Camera Distance", style={'fontWeight': 'bold', 'marginBottom': '10px', 'display': 'block'}),
             dcc.Slider(id='cam_dist', min=10.0, max=150.0, step=1.0, value=60.0, updatemode='drag',
-                       tooltip={"placement": "bottom", "always_visible": True}),
+                       marks=None, tooltip={"placement": "bottom", "always_visible": True}),
         ]),
     ]),
 
-    html.Hr(),
+    html.Hr(style={'marginTop': '30px', 'marginBottom': '30px'}),
 
     # The Plot
     dcc.Graph(id='sim-plot', style={'height': '70vh'})
 ])
-
 
 # --- Callbacks (The Real-Time Engine) ---
 @app.callback(
@@ -229,7 +232,7 @@ def update_plot(energy_kev, beam_y_offset, wedge_x, wedge_y, int_detector_x, int
         propagate(beam['bx'], beam['by'], beam['bslope'], color_map[beam['hist']], det_x, label=beam['hist'])
 
     fig.update_layout(
-        title=f"Si(333) Ray Tracing | Energy = {energy_kev:.2f} keV | θ_B ≈ {theta_B_deg:.2f}°",
+        title=f"Si(333) | Energy = {energy_kev:.2f} keV | θ<sub>B</sub> ≈ {theta_B_deg:.2f}°",
         xaxis=dict(title='Propagation Distance (mm)', range=[-15, 170]),
         yaxis=dict(title='Transverse Distance (mm)', range=[-35, 35], scaleanchor="x", scaleratio=1),
         shapes=shapes, annotations=annotations,
