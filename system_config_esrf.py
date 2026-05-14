@@ -290,15 +290,36 @@ app.clientside_callback(
             });
         }
 
-        // Generate Colors
-        let sorted_hists_set = new Set();
-        final_beams.forEach(b => sorted_hists_set.add(b.hist));
-        let sorted_hists = Array.from(sorted_hists_set).sort();
+        // --- Generate Stable Colors ---
+        // A fixed dictionary so beam colors never change when the bomb moves
+        let fixed_palette = {
+            "T1*T2*T3": "#ff7f0e", // Orange
+            "T1*T2*R3": "#1f77b4", // Blue
+            "T1*R2*T3": "#2ca02c", // Green
+            "T1*R2*R3": "#d62728", // Red
+            "R1*T2*T3": "#9467bd", // Purple
+            "R1*T2*R3": "#8c564b", // Brown
+            "R1*R2*T3": "#e377c2", // Pink
+            "R1*R2*R3": "#17becf", // Cyan
+            "T1*R2*R3 + T1*T2*T3": "#bcbd22", // Olive (O-beam Interference)
+            "T1*R2*T3 + T1*T2*R3": "#7f7f7f", // Gray (H-beam Interference)
+            "Direct Miss": "black"
+        };
 
-        let colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f'];
+        let backup_colors = ['#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5', '#c49c94', '#f7b6d2', '#c7c7c7'];
+        let fallback_counter = 0;
+
         let color_map = {};
-        sorted_hists.forEach((hist, i) => {
-            color_map[hist] = colors[i % colors.length];
+        final_beams.forEach(beam => {
+            if (!color_map[beam.hist]) {
+                if (fixed_palette[beam.hist]) {
+                    color_map[beam.hist] = fixed_palette[beam.hist];
+                } else {
+                    // Just in case a weird beam combination happens that we didn't explicitly name
+                    color_map[beam.hist] = backup_colors[fallback_counter % backup_colors.length];
+                    fallback_counter++;
+                }
+            }
         });
 
         // Sort plotting order dynamically
