@@ -1,6 +1,5 @@
 import dash
 from dash import dcc, html, Input, Output
-import numpy as np
 import plotly.graph_objects as go
 
 # Initialize the Dash app
