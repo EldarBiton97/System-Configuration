@@ -72,7 +72,7 @@ app.layout = html.Div(style={'fontFamily': 'system-ui, -apple-system, sans-serif
                                                      'textTransform': 'uppercase', 'fontSize': '0.85em'}),
 
                     html.Label("Bomb X", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
-                    dcc.Slider(id='bomb_x', min=0.0, max=60.0, step=0.5, value=28.0, updatemode='drag', marks=None,
+                    dcc.Slider(id='bomb_x', min=0.0, max=60.0, step=0.5, value=30.0, updatemode='drag', marks=None,
                                tooltip={"placement": "bottom", "always_visible": True}),
 
                     html.Div(style={'height': '15px'}),
@@ -85,7 +85,7 @@ app.layout = html.Div(style={'fontFamily': 'system-ui, -apple-system, sans-serif
             # Group 4: Detectors
             html.Div(style={'marginBottom': '10px'}, children=[
                 html.Label("Camera Distance", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
-                dcc.Slider(id='cam_dist', min=10.0, max=150.0, step=1.0, value=60.0, updatemode='drag', marks=None,
+                dcc.Slider(id='cam_dist', min=10.0, max=150.0, step=1.0, value=15.0, updatemode='drag', marks=None,
                            tooltip={"placement": "bottom", "always_visible": True}),
             ]),
         ])
