@@ -321,17 +321,17 @@ app.clientside_callback(
 
         // --- Legend & Drawing Order ---
         // Force the legend to statically match the standard far-field vertical layout
-        // (Top-to-Bottom: Orange, Red, Blue, Brown, Green, Purple)
+        // (Top-to-Bottom: Orange, Blue, Red, Green, Brown, Purple)
         let visual_order = {
             "T1*T2*T3": 1,            // Top (Orange)
-            "R1*R2*T3 + T1*R2*R3": 2, // Middle-Up (Red)
-            "R1*R2*T3": 2,            
-            "T1*R2*R3": 2,            
-            "T1*T2*R3": 3,            // Top-Down (Blue)
-            "R1*T2*R3": 4,            // Bottom-Up (Brown)
-            "R1*R2*R3 + T1*R2*T3": 5, // Middle-Down (Green)
-            "R1*R2*R3": 5,            
-            "T1*R2*T3": 5,            
+            "T1*T2*R3": 2,            // Top-Down (Blue)
+            "R1*R2*T3 + T1*R2*R3": 3, // Middle-Up (Red)
+            "R1*R2*T3": 3,            
+            "T1*R2*R3": 3,            
+            "R1*R2*R3 + T1*R2*T3": 4, // Middle-Down (Green)
+            "R1*R2*R3": 4,            
+            "T1*R2*T3": 4,   
+            "R1*T2*R3": 5,            // Bottom-Up (Brown)         
             "R1*T2*T3": 6,            // Bottom (Purple)
             "Direct Miss": 99
         };
