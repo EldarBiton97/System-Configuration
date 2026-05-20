@@ -160,6 +160,10 @@ app.clientside_callback(
 
         // Bomb
         add_rect(bx_min, by_min, bx_max, by_max, '#555555', 'black');
+        
+        // 🟢 ADD YOUR NEW RECTANGLE HERE! 🟢
+        // Parameters: (x_start, y_start, x_end, y_end, fill_color, border_color)
+        // add_rect(10, 10, 20, 20, 'green', 'black'); 
 
         // Wedge
         let wedge_length = 20.0;
@@ -293,25 +297,17 @@ app.clientside_callback(
         }
 
         // --- Generate Stable Colors ---
-        // A fixed dictionary so beam colors never change when the bomb moves or beams merge
         let fixed_palette = {
-            // Top Ports
-            "T1*T2*T3": "#ff7f0e", // Orange
-            "T1*T2*R3": "#1f77b4", // Blue
-            
-            // Middle Ports (Interfering paths - The O-beam and H-beam)
-            "R1*R2*T3 + T1*R2*R3": "#d62728", // Red
-            "R1*R2*T3": "#d62728",            // Red (If T1R2 is blocked by the bomb)
-            "T1*R2*R3": "#d62728",            // Red (If R1R2 is blocked by the bomb)
-
-            "R1*R2*R3 + T1*R2*T3": "#2ca02c", // Green
-            "R1*R2*R3": "#2ca02c",            // Green (If T1R2 is blocked)
-            "T1*R2*T3": "#2ca02c",            // Green (If R1R2 is blocked)
-
-            // Bottom Ports
-            "R1*T2*R3": "#8c564b", // Brown
-            "R1*T2*T3": "#9467bd", // Purple
-            
+            "T1*T2*T3": "#ff7f0e",
+            "T1*T2*R3": "#1f77b4",
+            "R1*R2*T3 + T1*R2*R3": "#d62728",
+            "R1*R2*T3": "#d62728",
+            "T1*R2*R3": "#d62728",
+            "R1*R2*R3 + T1*R2*T3": "#2ca02c",
+            "R1*R2*R3": "#2ca02c",
+            "T1*R2*T3": "#2ca02c",
+            "R1*T2*R3": "#8c564b",
+            "R1*T2*T3": "#9467bd",
             "Direct Miss": "black"
         };
 
@@ -319,26 +315,23 @@ app.clientside_callback(
         let fallback_counter = 0;
 
         // --- Legend & Drawing Order ---
-        // Force the legend to statically match the standard far-field vertical layout
-        // (Top-to-Bottom: Orange, Blue, Red, Green, Brown, Purple)
         let visual_order = {
-            "T1*T2*T3": 1,            // Top (Orange)
-            "T1*T2*R3": 2,            // Top-Down (Blue)
-            "R1*R2*T3 + T1*R2*R3": 3, // Middle-Up (Red)
-            "R1*R2*T3": 3,            
-            "T1*R2*R3": 3,            
-            "R1*R2*R3 + T1*R2*T3": 4, // Middle-Down (Green)
-            "R1*R2*R3": 4,            
-            "T1*R2*T3": 4,   
-            "R1*T2*R3": 5,            // Bottom-Up (Brown)         
-            "R1*T2*T3": 6,            // Bottom (Purple)
+            "T1*T2*T3": 1,
+            "T1*T2*R3": 2,
+            "R1*R2*T3 + T1*R2*R3": 3,
+            "R1*R2*T3": 3,
+            "T1*R2*R3": 3,
+            "R1*R2*R3 + T1*R2*T3": 4,
+            "R1*R2*R3": 4,
+            "T1*R2*T3": 4,
+            "R1*T2*R3": 5,
+            "R1*T2*T3": 6,
             "Direct Miss": 99
         };
 
         final_beams.sort((a, b) => {
             let rankA = visual_order[a.hist] || 50;
             let rankB = visual_order[b.hist] || 50;
-            // If two beams have the same rank (e.g., if a fallback occurs), sort alphabetically as a backup
             if (rankA === rankB) return a.hist.localeCompare(b.hist);
             return rankA - rankB;
         });
