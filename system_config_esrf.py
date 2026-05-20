@@ -44,27 +44,15 @@ app.layout = html.Div(style={'fontFamily': 'system-ui, -apple-system, sans-serif
                 html.Label("Beam Offset Y", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
                 dcc.Slider(id='beam_y', min=-15.0, max=15.0, step=0.5, value=0.0, updatemode='drag', marks=None,
                            tooltip={"placement": "bottom", "always_visible": True}),
+
+                html.Label("Camera Distance", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
+                dcc.Slider(id='cam_dist', min=10.0, max=150.0, step=1.0, value=15.0, updatemode='drag', marks=None,
+                           tooltip={"placement": "bottom", "always_visible": True}),
+
+                html.Div(style={'height': '15px'}),  # Space inside group
             ]),
 
-            # Group 2: The Wedge (Visually grouped with a white card)
-            html.Div(
-                style={'marginBottom': '30px', 'padding': '15px', 'backgroundColor': '#ffffff', 'borderRadius': '5px',
-                       'border': '1px solid #ddd'}, children=[
-                    html.Div("Wedge Position", style={'fontWeight': 'bold', 'color': '#666', 'marginBottom': '15px',
-                                                      'textTransform': 'uppercase', 'fontSize': '0.85em'}),
-
-                    html.Label("Wedge X", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
-                    dcc.Slider(id='wedge_x', min=0.0, max=22.0, step=0.5, value=15.0, updatemode='drag', marks=None,
-                               tooltip={"placement": "bottom", "always_visible": True}),
-
-                    html.Div(style={'height': '15px'}),
-
-                    html.Label("Wedge Y", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
-                    dcc.Slider(id='wedge_y', min=-30.0, max=30.0, step=0.5, value=20.0, updatemode='drag', marks=None,
-                               tooltip={"placement": "bottom", "always_visible": True}),
-                ]),
-
-            # Group 3: The Bomb (Visually grouped with a white card)
+            # Group 2: The Bomb (Visually grouped with a white card)
             html.Div(
                 style={'marginBottom': '30px', 'padding': '15px', 'backgroundColor': '#ffffff', 'borderRadius': '5px',
                        'border': '1px solid #ddd'}, children=[
@@ -82,12 +70,23 @@ app.layout = html.Div(style={'fontFamily': 'system-ui, -apple-system, sans-serif
                                tooltip={"placement": "bottom", "always_visible": True}),
                 ]),
 
-            # Group 4: Detectors
-            html.Div(style={'marginBottom': '10px'}, children=[
-                html.Label("Camera Distance", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
-                dcc.Slider(id='cam_dist', min=10.0, max=150.0, step=1.0, value=15.0, updatemode='drag', marks=None,
-                           tooltip={"placement": "bottom", "always_visible": True}),
-            ]),
+            # Group 3: The Wedge (Visually grouped with a white card)
+            html.Div(
+                style={'marginBottom': '30px', 'padding': '15px', 'backgroundColor': '#ffffff', 'borderRadius': '5px',
+                       'border': '1px solid #ddd'}, children=[
+                    html.Div("Wedge Position", style={'fontWeight': 'bold', 'color': '#666', 'marginBottom': '15px',
+                                                      'textTransform': 'uppercase', 'fontSize': '0.85em'}),
+
+                    html.Label("Wedge X", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
+                    dcc.Slider(id='wedge_x', min=0.0, max=22.0, step=0.5, value=15.0, updatemode='drag', marks=None,
+                               tooltip={"placement": "bottom", "always_visible": True}),
+
+                    html.Div(style={'height': '15px'}),
+
+                    html.Label("Wedge Y", style={'fontWeight': 'bold', 'display': 'block', 'marginBottom': '5px'}),
+                    dcc.Slider(id='wedge_y', min=-30.0, max=30.0, step=0.5, value=20.0, updatemode='drag', marks=None,
+                               tooltip={"placement": "bottom", "always_visible": True}),
+                ]),
         ])
     ])
 ])
